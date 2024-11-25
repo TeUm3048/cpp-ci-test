@@ -36,10 +36,10 @@ jobs:
           cmake --build . --target coverage
       
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2
+        uses: zgosalvez/github-actions-report-lcov@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./build/coverage_filtered.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
+          coverage-files: build/coverage_filtered.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          artifact-name: code-coverage-report
+          minimum-coverage: 90
+          update-comment: true
