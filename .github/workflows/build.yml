@@ -36,7 +36,7 @@ jobs:
           cmake --build . --target coverage
       
       - name: Upload coverage report
-        uses: zgosalvez/github-actions-report-lcov@v4
+        uses: zgosalvez/github-actions-report-lcov@v3
         with:
           coverage-files: build/coverage_filtered.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
