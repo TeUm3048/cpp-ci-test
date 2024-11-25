@@ -20,7 +20,7 @@ jobs:
         with:
           source-dir: .
           build-dir: build
-          generator: make
+          generator: Unix Makefiles
           c-compiler: gcc
           cxx-compiler: g++
           options: |
