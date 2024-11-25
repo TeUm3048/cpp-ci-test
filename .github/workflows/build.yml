@@ -1,0 +1,41 @@
+name: build_test_lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and test
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v4
+      - name: Configure CMake and build
+        uses: threeal/cmake-action@v2
+        with:
+          source-dir: .
+          build-dir: build
+          generator: make
+          c-compiler: gcc
+          cxx-compiler: g++
+          options: |
+            BUILD_TESTS=ON
+
+      - name: Run tests with coverage
+        run: |
+          cd build
+          cmake --build . --target coverage
+      
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./build/coverage_filtered.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
