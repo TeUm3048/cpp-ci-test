@@ -47,7 +47,6 @@ jobs:
           fi
       
       - name: Upload coverage report
-        continue-on-error: true
         uses: zgosalvez/github-actions-report-lcov@v3
         with:
           coverage-files: build/coverage_filtered.info
@@ -56,6 +55,7 @@ jobs:
           minimum-coverage: 90
           update-comment: true
       - name: Upload coverage to Coveralls
+        if: always()
         uses: coverallsapp/github-action@v2
         with:
           file: build/coverage_filtered.info
