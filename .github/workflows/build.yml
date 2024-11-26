@@ -1,0 +1,54 @@
+name: build_test_lint
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and test
+    steps:
+      - name: Setup LCOV
+        uses: hrishikesh-kadam/setup-lcov@v1
+        with:
+          ref: v2.2
+      - name: Check out source repository
+        uses: actions/checkout@v4
+      - name: Configure CMake and build
+        uses: threeal/cmake-action@v2
+        with:
+          source-dir: .
+          build-dir: build
+          generator: Unix Makefiles
+          c-compiler: gcc
+          cxx-compiler: g++
+          options: |
+            BUILD_TESTS=ON
+
+      - name: Run tests with coverage
+        run: |
+          cd build
+          cmake --build . --target coverage
+
+      - name: Upload coverage report
+        uses: zgosalvez/github-actions-report-lcov@v3
+        with:
+          coverage-files: build/coverage_filtered.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          artifact-name: "code-coverage-report"
+          minimum-coverage: 90
+          update-comment: true
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          file: build/coverage_filtered.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
