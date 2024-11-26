@@ -31,6 +31,12 @@ jobs:
         uses: hrishikesh-kadam/setup-lcov@v1
         with:
           ref: v2.2
+      - name: List cached files
+        run: |
+          ls -la /usr/local/bin
+          ls -la /usr/local/lib
+          du -sh /usr/local/*
+        
       - name: Check out source repository
         uses: actions/checkout@v4
       - name: Configure CMake and build
