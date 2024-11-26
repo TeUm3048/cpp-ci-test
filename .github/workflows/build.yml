@@ -17,7 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and test
     steps:
+      - name: Cache LCOV
+        id: cache-lcov
+        uses: actions/cache@v3
+        with:
+          path: /usr/local
+          key: lcov-${{ runner.os }}-v2.2
+          restore-keys: |
+            lcov-${{ runner.os }}-
+
       - name: Setup LCOV
+        if: steps.cache-lcov.outputs.cache-hit != 'true'
         uses: hrishikesh-kadam/setup-lcov@v1
         with:
           ref: v2.2
@@ -45,7 +55,7 @@ jobs:
             echo "Coverage report not found!";
             exit 1;
           fi
-      
+
       - name: Upload coverage report
         uses: zgosalvez/github-actions-report-lcov@v3
         with:
