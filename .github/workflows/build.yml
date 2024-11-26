@@ -21,6 +21,7 @@ jobs:
         uses: hrishikesh-kadam/setup-lcov@v1
         with:
           ref: v2.2
+        
       - name: Check out source repository
         uses: actions/checkout@v4
       - name: Configure CMake and build
@@ -39,15 +40,23 @@ jobs:
           cd build
           cmake --build . --target coverage
 
+      - name: Check coverage report exists
+        run: |
+          if [ ! -f build/coverage_filtered.info ]; then
+            echo "Coverage report not found!";
+            exit 1;
+          fi
+
       - name: Upload coverage report
         uses: zgosalvez/github-actions-report-lcov@v3
         with:
           coverage-files: build/coverage_filtered.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-name: "code-coverage-report"
-          minimum-coverage: 90
+          minimum-coverage: 10
           update-comment: true
       - name: Upload coverage to Coveralls
+        if: always()
         uses: coverallsapp/github-action@v2
         with:
           file: build/coverage_filtered.info

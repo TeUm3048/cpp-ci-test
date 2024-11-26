@@ -12,11 +12,20 @@ function(append_coverage_compiler_flags)
 endfunction()
 
 function(setup_target_for_coverage NAME EXECUTABLE)
+  if(${EXECUTABLE} MATCHES "all|ctest")
+    set(TARGET "all")
+    set(EXECUTABLE "ctest")
+  else()
+    set(TARGET EXECUTABLE)
+  endif()
   add_custom_target(${NAME}
+    COMMAND ${CMAKE_COMMAND} --build . --target ${TARGET}
+    COMMAND lcov --capture --initial --directory . --output-file coverage.base --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1
     COMMAND ${EXECUTABLE}
-    COMMAND lcov --capture --directory . --output-file coverage.info --ignore-errors=inconsistent --rc branch_coverage=1 
-    COMMAND lcov --output-file coverage_filtered.info --remove coverage.info "/usr/*" "include/*" "src/gtest*" "*/tests/*" --ignore-errors=unused,empty --rc branch_coverage=1 
-    COMMAND genhtml coverage_filtered.info --output-directory coverage_report --rc branch_coverage=1 
+    COMMAND lcov --capture --directory . --output-file coverage.info --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1
+    COMMAND lcov --add-tracefile coverage.base --add-tracefile coverage.info --output-file coverage.total --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1
+    COMMAND lcov --output-file coverage_filtered.info --remove coverage.total "/usr/*" "include/*" "src/gtest*" "src/gmock*" "*/tests/*" --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1 
+    COMMAND genhtml coverage_filtered.info --output-directory coverage_report --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Генерация отчёта покрытия кода"
     VERBATIM
