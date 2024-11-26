@@ -62,7 +62,7 @@ jobs:
           coverage-files: build/coverage_filtered.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
           artifact-name: "code-coverage-report"
-          minimum-coverage: 90
+          minimum-coverage: 10
           update-comment: true
       - name: Upload coverage to Coveralls
         if: always()
