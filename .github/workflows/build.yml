@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and test
     steps:
-      - name: Check out source repository
-        uses: actions/checkout@v4
       - name: Setup LCOV
         uses: hrishikesh-kadam/setup-lcov@v1
         with:
           ref: v2.2
+      - name: Check out source repository
+        uses: actions/checkout@v4
       - name: Configure CMake and build
         uses: threeal/cmake-action@v2
         with:
@@ -47,3 +47,8 @@ jobs:
           artifact-name: "code-coverage-report"
           minimum-coverage: 90
           update-comment: true
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          file: build/coverage_filtered.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
