@@ -12,8 +12,14 @@ function(append_coverage_compiler_flags)
 endfunction()
 
 function(setup_target_for_coverage NAME EXECUTABLE)
+  if(${EXECUTABLE} MATCHES "all|ctest")
+    set(TARGET "all")
+    set(EXECUTABLE "ctest")
+  else()
+    set(TARGET EXECUTABLE)
+  endif()
   add_custom_target(${NAME}
-    COMMAND ${CMAKE_COMMAND} --build . --target ${EXECUTABLE}
+    COMMAND ${CMAKE_COMMAND} --build . --target ${TARGET}
     COMMAND lcov --capture --initial --directory . --output-file coverage.base --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1
     COMMAND ${EXECUTABLE}
     COMMAND lcov --capture --directory . --output-file coverage.info --ignore-errors=unused,empty,inconsistent,mismatch --rc branch_coverage=1
