@@ -17,38 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and test
     steps:
-      - name: Cache LCOV
-        id: cache-lcov
-        uses: actions/cache@v3
-        with:
-          path: |
-            /usr/local/bin/lcov
-            /usr/local/bin/genhtml
-            /usr/local/bin/geninfo
-            /usr/local/bin/genpng
-            /usr/local/bin/gendesc
-            /usr/local/bin/perl2lcov
-            /usr/local/bin/py2lcov
-            /usr/local/bin/xml2lcov
-            /usr/local/bin/xml2lcovutil.py
-            /usr/local/share/lcov/support-scripts
-            /usr/local/etc/lcovrc
-            /usr/local/share/perl
-            /usr/local/lib/lcov
-          key: lcov-${{ runner.os }}-v2.2
-          restore-keys: |
-            lcov-${{ runner.os }}-
-
       - name: Setup LCOV
-        if: steps.cache-lcov.outputs.cache-hit != 'true'
         uses: hrishikesh-kadam/setup-lcov@v1
         with:
           ref: v2.2
-      - name: List cached files
-        run: |
-          ls -la /usr/local/bin
-          ls -la /usr/local/lib
-          perl -V
         
       - name: Check out source repository
         uses: actions/checkout@v4
