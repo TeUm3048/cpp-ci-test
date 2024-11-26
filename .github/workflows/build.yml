@@ -21,7 +21,20 @@ jobs:
         id: cache-lcov
         uses: actions/cache@v3
         with:
-          path: /usr/local
+          path: |
+            /usr/local/bin/lcov
+            /usr/local/bin/genhtml
+            /usr/local/bin/geninfo
+            /usr/local/bin/genpng
+            /usr/local/bin/gendesc
+            /usr/local/bin/perl2lcov
+            /usr/local/bin/py2lcov
+            /usr/local/bin/xml2lcov
+            /usr/local/bin/xml2lcovutil.py
+            /usr/local/share/lcov/support-scripts
+            /usr/local/etc/lcovrc
+            /usr/local/share/perl
+            /usr/local/lib/lcov
           key: lcov-${{ runner.os }}-v2.2
           restore-keys: |
             lcov-${{ runner.os }}-
@@ -36,6 +49,7 @@ jobs:
           ls -la /usr/local/bin
           ls -la /usr/local/lib
           du -sh /usr/local/*
+          perl -V
         
       - name: Check out source repository
         uses: actions/checkout@v4
