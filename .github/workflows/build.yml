@@ -39,7 +39,15 @@ jobs:
           cd build
           cmake --build . --target coverage
 
+      - name: Check coverage report exists
+        run: |
+          if [ ! -f build/coverage_filtered.info ]; then
+            echo "Coverage report not found!";
+            exit 1;
+          fi
+      
       - name: Upload coverage report
+        continue-on-error: true
         uses: zgosalvez/github-actions-report-lcov@v3
         with:
           coverage-files: build/coverage_filtered.info
