@@ -1,5 +1,9 @@
 name: build_test_lint
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   push:
     branches:
@@ -34,12 +38,12 @@ jobs:
         run: |
           cd build
           cmake --build . --target coverage
-      
+
       - name: Upload coverage report
         uses: zgosalvez/github-actions-report-lcov@v3
         with:
           coverage-files: build/coverage_filtered.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          artifact-name: 'code-coverage-report'
+          artifact-name: "code-coverage-report"
           minimum-coverage: 90
           update-comment: true
